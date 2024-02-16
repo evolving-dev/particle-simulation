@@ -36,22 +36,14 @@ class Simulation:
     def iteration(self, speed=1):
         speed = speed / 8 #Default speed factor is 1/8
 
-        if self.has_border: #Delete photons exiting the world border
-            for p in range(len(self.photons) - 1, -1, -1):
-                if self.photons[p].x < self.world_border[0] or self.photons[p].x > self.world_border[2]:
-                    del self.photons[p]
-                elif self.photons[p].y < self.world_border[1] or self.photons[p].y > self.world_border[3]:
-                    del self.photons[p]
-
         atoms_out = copy.copy(self.atoms)
-        photons_out = copy.copy(self.photons)
 
         for atom in atoms_out:
             #Temperature
             if atom.temperature > 0:
                 if random.randint(0,100 / speed) <= atom.temperature:
                     atom.temperature -= 1 / atom.mass
-                    photons_out += [Photon.Photon(atom.x, atom.y)]
+                    self.photons += [Photon.Photon(atom.x, atom.y)]
 
             #Gravitation
             for grav_atom in self.atoms:
@@ -101,7 +93,6 @@ class Simulation:
                     atom.vx = atom_vx_new
                     atom.vy = atom_vy_new
 
-
             #World borders
             if self.has_border:
                 if atom.x - atom.radius < self.world_border[0]:
@@ -117,10 +108,15 @@ class Simulation:
                     atom.y = self.world_border[3] - atom.radius
                     atom.vy = -atom.vy
 
+                for p in range(len(self.photons) - 1, -1, -1): #Delete photons exiting the world border
+                    if self.photons[p].x < self.world_border[0] or self.photons[p].x > self.world_border[2]:
+                        del self.photons[p]
+                    elif self.photons[p].y < self.world_border[1] or self.photons[p].y > self.world_border[3]:
+                        del self.photons[p]
 
-        for photon in photons_out:
+
+        for photon in self.photons:
             photon.x += photon.vx * speed
             photon.y += photon.vy * speed
 
         self.atoms = atoms_out
-        self.photons = photons_out
