@@ -33,7 +33,7 @@ class Simulation:
             self.atoms += [Atom.Atom(x_coord, y_coord, temperature=temperature)]
 
 
-    def iteration(self, speed=1, collision_prevention=True):
+    def iteration(self, speed=0.125, collision_prevention=True):
         if self.has_border: #Delete photons exiting the world border
             for p in range(len(self.photons) - 1, -1, -1):
                 if self.photons[p].x < self.world_border[0] or self.photons[p].x > self.world_border[2]:
@@ -47,11 +47,6 @@ class Simulation:
         for atom in atoms_out:
             #Temperature
             if atom.temperature > 0:
-                atom.x += math.sin(atom.temp_movement_state) * speed * 0.125
-                atom.y += math.cos(atom.temp_movement_state + 0.5) * speed * 0.125
-                atom.temp_movement_state += random.randint(60,90)/100
-                if atom.temp_movement_state > 6.29: #2*Pi
-                    atom.temp_movement_state = 0
                 if random.randint(0,100) <= atom.temperature:
                     atom.temperature -= 1 / atom.mass
                     photons_out += [Photon.Photon(atom.x, atom.y)]
@@ -77,40 +72,53 @@ class Simulation:
                 a_x = x_component * a_grav
                 a_y = y_component * a_grav
 
-                atom.x += a_x * speed
-                atom.y += a_y * speed
-
-                if collision_prevention:
-                    for test_atom in atoms_out:
-                        if atom == test_atom:
-                            continue
-
-                        distance = utils.distance(atom.x, atom.y, test_atom.x, test_atom.y)
-                        iters = 0
-                        while distance <= (atom.radius + test_atom.radius) and iters < 4:
-                            iters += 1
-                            if (a_x == 0 or a_y == 0):
-                                break
-                            atom.x -= a_x / 4
-                            atom.y -= a_y / 4
-                            #test_atom.x += a_x / 4
-                            #test_atom.y += a_y / 4
-                            distance = utils.distance(atom.x, atom.y, test_atom.x, test_atom.y)
+                atom.vx += a_x * speed
+                atom.vy += a_y * speed
 
             #Momentum (Impuls)
             atom.x += atom.vx * speed
             atom.y += atom.vy * speed
 
+            if collision_prevention:
+                for test_atom in atoms_out:
+                    if atom == test_atom:
+                        continue
+
+                    distance = utils.distance(atom.x, atom.y, test_atom.x, test_atom.y)
+
+                    if distance <= (atom.radius + test_atom.radius):
+                        masses = atom.mass + test_atom.mass
+
+                        atom_px = atom.vx * atom.mass
+                        atom_py = atom.vy * atom.mass
+
+                        test_atom_px = test_atom.vx * test_atom.mass
+                        test_atom_py = test_atom.vy * test_atom.mass
+
+                        atom_vx_new = (atom_px + test_atom.mass * (2 * test_atom.vx - atom.vx)) / masses
+                        atom_vy_new = (atom_py + test_atom.mass * (2 * test_atom.vy - atom.vy)) / masses
+
+                        test_atom.vx = (test_atom_px + atom.mass * (2 * atom.vx - test_atom.vx)) / masses
+                        test_atom.vy = (test_atom_py + atom.mass * (2 * atom.vy - test_atom.vy)) / masses
+
+                        atom.vx = atom_vx_new
+                        atom.vy = atom_vy_new
+
+
             #World borders
             if self.has_border:
                 if atom.x - (atom.mass ** 0.5) < self.world_border[0]:
                     atom.x = self.world_border[0] + (atom.mass ** 0.5)
+                    atom.vx = -atom.vx
                 if atom.x + (atom.mass ** 0.5) > self.world_border[2]:
                     atom.x = self.world_border[2] - (atom.mass ** 0.5)
+                    atom.vx = -atom.vx
                 if atom.y - (atom.mass ** 0.5) < self.world_border[1]:
                     atom.y = self.world_border[1] + (atom.mass ** 0.5)
+                    atom.vy = -atom.vy
                 if atom.y + (atom.mass ** 0.5) > self.world_border[3]:
                     atom.y = self.world_border[3] - (atom.mass ** 0.5)
+                    atom.vy = -atom.vy
 
 
         for photon in photons_out:

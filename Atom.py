@@ -8,8 +8,6 @@ class Atom:
         self.vx = 0
         self.vy = 0
 
-        self.temp_movement_state = 0
-
         self.mass = mass
         self.radius = self.mass ** 0.5
 
