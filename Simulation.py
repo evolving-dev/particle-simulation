@@ -106,17 +106,17 @@ class Simulation:
 
             #World borders
             if self.has_border:
-                if atom.x - (atom.mass ** 0.5) < self.world_border[0]:
-                    atom.x = self.world_border[0] + (atom.mass ** 0.5)
+                if atom.x - atom.radius < self.world_border[0]:
+                    atom.x = self.world_border[0] + atom.radius
                     atom.vx = -atom.vx
-                if atom.x + (atom.mass ** 0.5) > self.world_border[2]:
-                    atom.x = self.world_border[2] - (atom.mass ** 0.5)
+                if atom.x + atom.radius > self.world_border[2]:
+                    atom.x = self.world_border[2] - atom.radius
                     atom.vx = -atom.vx
-                if atom.y - (atom.mass ** 0.5) < self.world_border[1]:
-                    atom.y = self.world_border[1] + (atom.mass ** 0.5)
+                if atom.y - atom.radius < self.world_border[1]:
+                    atom.y = self.world_border[1] + atom.radius
                     atom.vy = -atom.vy
-                if atom.y + (atom.mass ** 0.5) > self.world_border[3]:
-                    atom.y = self.world_border[3] - (atom.mass ** 0.5)
+                if atom.y + atom.radius > self.world_border[3]:
+                    atom.y = self.world_border[3] - atom.radius
                     atom.vy = -atom.vy
 
 
