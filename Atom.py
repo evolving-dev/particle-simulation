@@ -1,5 +1,3 @@
-import random
-
 class Atom:
     def __init__(self, x, y, mass = 1, temperature = 0):
         self.x = x
@@ -7,8 +5,6 @@ class Atom:
 
         self.vx = 0
         self.vy = 0
-
-        self.temp_movement_state = 0
 
         self.mass = mass
         self.radius = self.mass ** 0.5

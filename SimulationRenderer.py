@@ -58,17 +58,17 @@ class Renderer:
             screen_y = (atom.y - camera.y) * camera.z * self.scaling
             radius = (atom.mass ** 0.5) * camera.z * self.scaling
             if self.is_on_screen([screen_x, screen_y], margin=radius):
-                pygame.draw.circle(screen, [50, 50, 50], center=[screen_x, screen_y], radius=radius)
+                pygame.draw.circle(screen, [50 + min(atom.temperature * 10, 200), 50, 50], center=[screen_x, screen_y], radius=radius)
 
         for photon in simulation.photons:
             screen_x = (photon.x - camera.x) * camera.z * self.scaling
             screen_y = (photon.y - camera.y) * camera.z * self.scaling
             radius = 0.25 * camera.z * self.scaling
             if self.is_on_screen([screen_x, screen_y], margin=radius):
-                pygame.draw.circle(screen, [255, 200, 0], center=[screen_x, screen_y], radius=radius)
+                pygame.draw.circle(screen, [255, 150, 0], center=[screen_x, screen_y], radius=radius)
 
 
     def render_fps_counter(self, screen, fps):
         font = pygame.font.Font(self.font, self.height // 40)
-        fps_text = font.render("FPS: " + str(fps), True, [128,128,128])
+        fps_text = font.render("FPS: " + str(fps), True, [100,100,100])
         screen.blit(fps_text, [0,0])
