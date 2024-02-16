@@ -33,7 +33,9 @@ class Simulation:
             self.atoms += [Atom.Atom(x_coord, y_coord, temperature=temperature)]
 
 
-    def iteration(self, speed=0.125, collision_prevention=True):
+    def iteration(self, speed=1):
+        speed = speed / 8 #Default speed factor is 1/8
+
         if self.has_border: #Delete photons exiting the world border
             for p in range(len(self.photons) - 1, -1, -1):
                 if self.photons[p].x < self.world_border[0] or self.photons[p].x > self.world_border[2]:
@@ -47,13 +49,11 @@ class Simulation:
         for atom in atoms_out:
             #Temperature
             if atom.temperature > 0:
-                if random.randint(0,100) <= atom.temperature:
+                if random.randint(0,100 / speed) <= atom.temperature:
                     atom.temperature -= 1 / atom.mass
                     photons_out += [Photon.Photon(atom.x, atom.y)]
 
             #Gravitation
-            grav_vx = 0
-            grav_vy = 0
             for grav_atom in self.atoms:
                 distance = utils.distance(atom.x, atom.y, grav_atom.x, grav_atom.y)
 
@@ -79,30 +79,29 @@ class Simulation:
             atom.x += atom.vx * speed
             atom.y += atom.vy * speed
 
-            if collision_prevention:
-                for test_atom in atoms_out:
-                    if atom == test_atom:
-                        continue
+            #Elastic collisions between atoms (conservation of momentum and energy)
+            for test_atom in atoms_out:
+                if atom == test_atom:
+                    continue
 
-                    distance = utils.distance(atom.x, atom.y, test_atom.x, test_atom.y)
+                distance = utils.distance(atom.x, atom.y, test_atom.x, test_atom.y)
 
-                    if distance <= (atom.radius + test_atom.radius):
-                        masses = atom.mass + test_atom.mass
+                if distance <= (atom.radius + test_atom.radius):
+                    atom.x -= atom.vx * speed
+                    atom.y -= atom.vy * speed
+                    test_atom.x -= test_atom.vx * speed
+                    test_atom.y -= test_atom.vy * speed
 
-                        atom_px = atom.vx * atom.mass
-                        atom_py = atom.vy * atom.mass
+                    masses = atom.mass + test_atom.mass
 
-                        test_atom_px = test_atom.vx * test_atom.mass
-                        test_atom_py = test_atom.vy * test_atom.mass
+                    atom_vx_new = (atom.vx * atom.mass + test_atom.mass * (2 * test_atom.vx - atom.vx)) / masses
+                    atom_vy_new = (atom.vy * atom.mass + test_atom.mass * (2 * test_atom.vy - atom.vy)) / masses
 
-                        atom_vx_new = (atom_px + test_atom.mass * (2 * test_atom.vx - atom.vx)) / masses
-                        atom_vy_new = (atom_py + test_atom.mass * (2 * test_atom.vy - atom.vy)) / masses
+                    test_atom.vx = (test_atom.mass * test_atom.vx + atom.mass * (2 * atom.vx - test_atom.vx)) / masses
+                    test_atom.vy = (test_atom.mass * test_atom.vy + atom.mass * (2 * atom.vy - test_atom.vy)) / masses
 
-                        test_atom.vx = (test_atom_px + atom.mass * (2 * atom.vx - test_atom.vx)) / masses
-                        test_atom.vy = (test_atom_py + atom.mass * (2 * atom.vy - test_atom.vy)) / masses
-
-                        atom.vx = atom_vx_new
-                        atom.vy = atom_vy_new
+                    atom.vx = atom_vx_new
+                    atom.vy = atom_vy_new
 
 
             #World borders
