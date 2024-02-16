@@ -17,8 +17,6 @@ open = True
 pygame.init()
 screen = pygame.display.set_mode(dimensions)
 
-#icon = pygame.image.load('images/icon.png').convert_alpha()
-#pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Teilchensimulation")
 
@@ -46,31 +44,21 @@ while open:
             elif event.button == 5:
                 cam.z -= 0.1 if cam.z >= 0.2 else 0
 
-
         elif event.type == pygame.KEYDOWN:
             if current_screen == "simulation":
-                if event.key == pygame.K_p:
-                    global_speed += 1 if global_speed < 50 else 0
-                elif event.key == pygame.K_o:
-                    global_speed -= 1 if global_speed > 1 else 0
-                elif event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE:
                     simulation_running = not simulation_running
 
 
     if current_screen == "simulation":
         cam.update(pygame.key.get_pressed(), dt)
 
-
-        #sped up iterations while converving accuracy
-        #for i in range(global_speed):
-        #    test_world.full_creature_iteration(override_dt = dt if global_speed == 1 else 1 / target_fps)
-        simulation.iteration()
+        if simulation_running:
+            simulation.iteration()
         renderer.render_world(screen, cam)
         renderer.render_simulation(screen, cam, simulation)
         renderer.render_fps_counter(screen, round(clock.get_fps(), 1))
 
-    #else:
-        #ui_renderer.render_menu(screen)
 
     pygame.display.flip()
 

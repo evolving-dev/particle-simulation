@@ -93,6 +93,8 @@ class Simulation:
                                 break
                             atom.x -= a_x / 4
                             atom.y -= a_y / 4
+                            #test_atom.x += a_x / 4
+                            #test_atom.y += a_y / 4
                             distance = utils.distance(atom.x, atom.y, test_atom.x, test_atom.y)
 
             #Momentum (Impuls)

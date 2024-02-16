@@ -72,17 +72,3 @@ class Renderer:
         font = pygame.font.Font(self.font, self.height // 40)
         fps_text = font.render("FPS: " + str(fps), True, [128,128,128])
         screen.blit(fps_text, [0,0])
-
-    # def get_clicked(self, pos, camera, creatures):
-    #     world_coord_x = pos[0] / (self.scaling * camera.z) + camera.x
-    #     world_coord_y = pos[1] / (self.scaling * camera.z) + camera.y
-    #
-    #     for creature in creatures:
-    #         creature_size = round(((creature.energy + 50) * camera.z * self.scaling) // 250)
-    #
-    #         creature_size /= self.scaling * camera.z
-    #
-    #         if abs(world_coord_x - creature.x) <= creature_size and abs(world_coord_y - creature.y) <= creature_size:
-    #             self.clicked_creature = True
-    #             creature.selected = True
-    #             break
