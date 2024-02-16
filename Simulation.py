@@ -43,8 +43,8 @@ class Simulation:
                 elif self.photons[p].y < self.world_border[1] or self.photons[p].y > self.world_border[3]:
                     del self.photons[p]
 
-        atoms_out = copy.deepcopy(self.atoms)
-        photons_out = copy.deepcopy(self.photons)
+        atoms_out = copy.copy(self.atoms)
+        photons_out = copy.copy(self.photons)
 
         for atom in atoms_out:
             #Temperature
@@ -61,19 +61,17 @@ class Simulation:
                 if distance <= atom.radius + grav_atom.radius:
                     continue
 
-                f_grav = (atom.mass * grav_atom.mass) / (distance ** 2)
+                f_grav = (atom.mass * grav_atom.mass) / (distance * distance)
 
                 a_grav = f_grav / atom.mass
 
                 #Separate x and y components of acceleration
-                x_component = (grav_atom.x - atom.x) / (abs(grav_atom.x - atom.x) + abs(grav_atom.y - atom.y))
-                y_component = (grav_atom.y - atom.y) / (abs(grav_atom.x - atom.x) + abs(grav_atom.y - atom.y))
+                total_distance = abs(grav_atom.x - atom.x) + abs(grav_atom.y - atom.y)
+                x_component = (grav_atom.x - atom.x) / total_distance
+                y_component = (grav_atom.y - atom.y) / total_distance
 
-                a_x = x_component * a_grav
-                a_y = y_component * a_grav
-
-                atom.vx += a_x * speed
-                atom.vy += a_y * speed
+                atom.vx += x_component * a_grav * speed
+                atom.vy += y_component * a_grav * speed
 
             #Momentum (Impuls)
             atom.x += atom.vx * speed
