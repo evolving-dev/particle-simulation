@@ -1,13 +1,7 @@
 import pygame
-import time, os
-
-from ast import literal_eval
+import time
 
 import Camera, Simulation, SimulationRenderer
-
-def readfile(name):
-    with open(name,"rb") as f:
-        return f.read().decode("utf-8")
 
 dimensions = [1280,720]
 target_fps = 60
@@ -16,18 +10,16 @@ open = True
 
 pygame.init()
 screen = pygame.display.set_mode(dimensions)
-
 clock = pygame.time.Clock()
 pygame.display.set_caption("Teilchensimulation")
 
-
 cam = Camera.Camera()
 renderer = SimulationRenderer.Renderer(dimensions, "font/PTSans-Regular.ttf")
-simulation = Simulation.Simulation(world_border=[])#[-80, -80, 80, 80]
+simulation = Simulation.Simulation() #world border format: [-x, -y, +x, +y]
 simulation.init_random_atoms(count=20)
 
-dt = 0
-global_speed = 1
+delta_time = 0
+simulation_speed = 1
 t = time.time()
 
 simulation_running = False
@@ -49,16 +41,16 @@ while open:
                 if event.key == pygame.K_SPACE:
                     simulation_running = not simulation_running
                 elif event.key == pygame.K_p:
-                    global_speed *= 2 if global_speed <= 128 else 1
+                    simulation_speed *= 2 if simulation_speed <= 128 else 1
                 elif event.key == pygame.K_o:
-                    global_speed //= 2 if global_speed > 1 else 1
+                    simulation_speed //= 2 if simulation_speed > 1 else 1
 
 
     if current_screen == "simulation":
-        cam.update(pygame.key.get_pressed(), dt)
+        cam.update(pygame.key.get_pressed(), delta_time)
 
         if simulation_running:
-            for i in range(global_speed):
+            for i in range(simulation_speed):
                 simulation.iteration()
         renderer.render_world(screen, cam)
         renderer.render_simulation(screen, cam, simulation)
@@ -69,7 +61,7 @@ while open:
 
     clock.tick(target_fps)
 
-    dt = time.time() - t
+    delta_time = time.time() - t
     t = time.time()
 
 pygame.quit()
