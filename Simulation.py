@@ -31,7 +31,7 @@ class Simulation:
         for n_atom in range(count):
             x_coord = random.randint(min_x, max_x)
             y_coord = random.randint(min_y, max_y)
-            temperature = random.randint(0, 20)
+            temperature = random.randint(0, 60)
             self.atoms += [Atom.Atom(x_coord, y_coord, temperature=temperature)]
 
 
@@ -92,11 +92,11 @@ class Simulation:
                         atom.vy = atom_vy_new
 
                         if atom.temperature > grav_atom.temperature + 1:
-                            atom.temperature -= 1
-                            grav_atom.temperature += 1
+                            atom.temperature -= 1 / atom.mass
+                            grav_atom.temperature += 1 / grav_atom.mass
                         elif atom.temperature + 1 < grav_atom.temperature:
-                            atom.temperature += 1
-                            grav_atom.temperature -= 1
+                            atom.temperature += 1 / atom.mass
+                            grav_atom.temperature -= 1 / grav_atom.mass
 
                 #Gravitation
                 else:
