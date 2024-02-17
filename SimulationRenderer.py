@@ -60,7 +60,7 @@ class Renderer:
             screen_y = (atom.y - camera.y) * camera.z * self.scaling
             radius = atom.radius * camera.z * self.scaling
             if self.is_on_screen([screen_x, screen_y], margin=radius):
-                pygame.draw.circle(screen, [50 + min(atom.temperature * 10, 200), 50, 50], center=[screen_x, screen_y], radius=radius)
+                pygame.draw.circle(screen, [50 + min(atom.temperature * 10, 205), 50 + min(max(atom.temperature - 20, 0) * 10, 205), min(max(atom.temperature - 40, 0) * 10, 205)], center=[screen_x, screen_y], radius=radius)
 
         for photon in simulation.photons:
             screen_x = (photon.x - camera.x) * camera.z * self.scaling
