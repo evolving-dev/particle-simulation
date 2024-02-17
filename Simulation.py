@@ -91,6 +91,13 @@ class Simulation:
                         atom.vx = atom_vx_new
                         atom.vy = atom_vy_new
 
+                        if atom.temperature > grav_atom.temperature + 1:
+                            atom.temperature -= 1
+                            grav_atom.temperature += 1
+                        elif atom.temperature + 1 < grav_atom.temperature:
+                            atom.temperature += 1
+                            grav_atom.temperature -= 1
+
                 #Gravitation
                 else:
                     f_grav = (atom.mass * grav_atom.mass) / (distance * distance)
