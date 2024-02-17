@@ -12,3 +12,6 @@ class Atom:
         self.radius = math.sqrt(self.mass) / 2
 
         self.temperature = temperature
+
+    def update_radius(self):
+        self.radius = math.sqrt(self.mass) / 2
