@@ -31,7 +31,7 @@ class Simulation:
         for n_atom in range(count):
             x_coord = random.randint(min_x, max_x)
             y_coord = random.randint(min_y, max_y)
-            temperature = random.choice([0,5,10,20])
+            temperature = random.randint(0, 20)
             self.atoms += [Atom.Atom(x_coord, y_coord, temperature=temperature)]
 
 
@@ -46,9 +46,9 @@ class Simulation:
 
             #Temperature
             if atom.temperature >= 1:
-                atom.vx += 0.25 * speed * atom.temperature * (random.random() - 0.5) / atom.mass
-                atom.vy += 0.25 * speed * atom.temperature * (random.random() - 0.5) / atom.mass
-                if random.randint(0,math.ceil(100 / speed)) <= atom.temperature:
+                atom.vx += 0.125 * speed * atom.temperature * (random.random() - 0.5) / atom.mass
+                atom.vy += 0.125 * speed * atom.temperature * (random.random() - 0.5) / atom.mass
+                if random.randint(0,math.ceil(300 / speed)) <= atom.temperature:
                     atom.temperature -= 1 / atom.mass
                     self.photons += [Photon.Photon(atom.x, atom.y)]
 
