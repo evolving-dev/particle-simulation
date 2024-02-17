@@ -51,7 +51,7 @@ while open:
                 elif event.key == pygame.K_p:
                     global_speed *= 2 if global_speed <= 128 else 1
                 elif event.key == pygame.K_o:
-                    global_speed //= 2 if global_speed >= 1 else 1
+                    global_speed //= 2 if global_speed > 1 else 1
 
 
     if current_screen == "simulation":
