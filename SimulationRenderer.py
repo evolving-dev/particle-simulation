@@ -67,7 +67,7 @@ class Renderer:
             screen_y = (photon.y - camera.y) * camera.z * self.scaling
             radius = 0.25 * camera.z * self.scaling
             if self.is_on_screen([screen_x, screen_y], margin=radius):
-                pygame.draw.circle(screen, [255, 150, 0], center=[screen_x, screen_y], radius=radius)
+                pygame.draw.circle(screen, [0, 150, 255], center=[screen_x, screen_y], radius=radius)
 
 
     def render_fps_counter(self, screen, fps):
