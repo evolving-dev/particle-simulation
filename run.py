@@ -23,8 +23,8 @@ pygame.display.set_caption("Teilchensimulation")
 
 cam = Camera.Camera()
 renderer = SimulationRenderer.Renderer(dimensions, "font/PTSans-Regular.ttf")
-simulation = Simulation.Simulation()
-simulation.init_random_atoms()
+simulation = Simulation.Simulation(world_border=[])#[-80, -80, 80, 80]
+simulation.init_random_atoms(count=20)
 
 dt = 0
 global_speed = 1
@@ -48,16 +48,21 @@ while open:
             if current_screen == "simulation":
                 if event.key == pygame.K_SPACE:
                     simulation_running = not simulation_running
+                elif event.key == pygame.K_p:
+                    global_speed *= 2 if global_speed <= 128 else 1
+                elif event.key == pygame.K_o:
+                    global_speed //= 2 if global_speed > 1 else 1
 
 
     if current_screen == "simulation":
         cam.update(pygame.key.get_pressed(), dt)
 
         if simulation_running:
-            simulation.iteration()
+            for i in range(global_speed):
+                simulation.iteration()
         renderer.render_world(screen, cam)
         renderer.render_simulation(screen, cam, simulation)
-        renderer.render_fps_counter(screen, round(clock.get_fps(), 1))
+        #renderer.render_fps_counter(screen, round(clock.get_fps()))
 
 
     pygame.display.flip()
