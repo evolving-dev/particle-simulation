@@ -48,13 +48,18 @@ while open:
             if current_screen == "simulation":
                 if event.key == pygame.K_SPACE:
                     simulation_running = not simulation_running
+                elif event.key == pygame.K_p:
+                    global_speed *= 2 if global_speed <= 128 else 1
+                elif event.key == pygame.K_o:
+                    global_speed //= 2 if global_speed >= 1 else 1
 
 
     if current_screen == "simulation":
         cam.update(pygame.key.get_pressed(), dt)
 
         if simulation_running:
-            simulation.iteration()
+            for i in range(global_speed):
+                simulation.iteration()
         renderer.render_world(screen, cam)
         renderer.render_simulation(screen, cam, simulation)
         renderer.render_fps_counter(screen, round(clock.get_fps(), 1))
