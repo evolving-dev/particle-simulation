@@ -41,8 +41,8 @@ class Simulation:
         for atom in atoms_out:
             #Temperature
             if atom.temperature > 0:
-                #atom.vx += 1/16 * speed * atom.temperature * (random.random() * random.choice([-1, 1]))
-                #atom.vy += 1/16 * speed * atom.temperature * (random.random() * random.choice([-1, 1]))
+                atom.vx += 0.25 * speed * atom.temperature * (random.random() - 0.5)
+                atom.vy += 0.25 * speed * atom.temperature * (random.random() - 0.5)
                 if random.randint(0,math.ceil(100 / speed)) <= atom.temperature:
                     atom.temperature -= 1 / atom.mass
                     self.photons += [Photon.Photon(atom.x, atom.y)]
