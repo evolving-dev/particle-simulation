@@ -2,7 +2,7 @@ import math
 import pygame
 
 class Renderer:
-    def __init__(self, dimensions, font, pixels_per_tile = 40):
+    def __init__(self, dimensions, font, pixels_per_tile = 20):
         self.scaling = pixels_per_tile
         self.width = dimensions[0]
         self.height = dimensions[1]
@@ -26,11 +26,13 @@ class Renderer:
     def render_world(self, screen, camera):
         screen.fill([220,220,220])
 
-        for x in range(math.ceil(self.height / (self.scaling * camera.z))):
-            pygame.draw.line(screen, [180,180,180], [0, (x - (camera.y % 1)) * self.scaling * camera.z], [self.width,(x - (camera.y % 1)) * self.scaling * camera.z])
+        for x in range(math.ceil(self.width / (self.scaling * camera.z))):
+            line_x = (x - (camera.x % 1)) * self.scaling * camera.z
+            pygame.draw.line(screen, [180,180,180], [line_x, 0], [line_x, self.height])
 
-        for y in range(math.ceil(self.width / (self.scaling * camera.z))):
-            pygame.draw.line(screen, [180,180,180], [(y - (camera.x % 1)) * self.scaling * camera.z, 0], [(y - (camera.x % 1)) * self.scaling * camera.z, self.height])
+        for y in range(math.ceil(self.height / (self.scaling * camera.z))):
+            line_y = (y - (camera.y % 1)) * self.scaling * camera.z
+            pygame.draw.line(screen, [180,180,180], [0, line_y], [self.width, line_y])
 
 
     def render_simulation(self, screen, camera, simulation):
@@ -56,7 +58,7 @@ class Renderer:
         for atom in simulation.atoms:
             screen_x = (atom.x - camera.x) * camera.z * self.scaling
             screen_y = (atom.y - camera.y) * camera.z * self.scaling
-            radius = (atom.mass ** 0.5) * camera.z * self.scaling
+            radius = atom.radius * camera.z * self.scaling
             if self.is_on_screen([screen_x, screen_y], margin=radius):
                 pygame.draw.circle(screen, [50 + min(atom.temperature * 10, 200), 50, 50], center=[screen_x, screen_y], radius=radius)
 
