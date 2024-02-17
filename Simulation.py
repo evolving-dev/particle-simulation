@@ -6,7 +6,7 @@ import utils
 import Atom, Photon
 
 class Simulation:
-    def __init__(self, world_border = [-30, -30, 30, 30], fusion_threshold = 10):
+    def __init__(self, world_border = [], fusion_threshold = 10):
         self.atoms = []
         self.photons = []
 
