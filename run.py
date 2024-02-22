@@ -57,9 +57,10 @@ while open:
         #renderer.render_fps_counter(screen, round(clock.get_fps()))
 
 
+    clock.tick(target_fps)
     pygame.display.flip()
 
-    clock.tick(target_fps)
+
 
     delta_time = time.time() - t
     t = time.time()
