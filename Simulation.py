@@ -18,7 +18,6 @@ class Simulation:
     def clear_all(self):
         self.atoms = []
         self.photons = []
-        self.structures = []
 
     def init_random_atoms(self, count=20):
         self.clear_all()

@@ -23,6 +23,7 @@ simulation_speed = 1
 t = time.time()
 
 simulation_running = False
+fps_counter_visible = False
 
 while open:
     events = pygame.event.get()
@@ -44,6 +45,8 @@ while open:
                     simulation_speed *= 2 if simulation_speed <= 128 else 1
                 elif event.key == pygame.K_o:
                     simulation_speed //= 2 if simulation_speed > 1 else 1
+                elif event.key == pygame.K_F1:
+                    fps_counter_visible = not fps_counter_visible
 
 
     if current_screen == "simulation":
@@ -52,9 +55,12 @@ while open:
         if simulation_running:
             for i in range(simulation_speed):
                 simulation.iteration()
+
         renderer.render_world(screen, cam)
         renderer.render_simulation(screen, cam, simulation)
-        #renderer.render_fps_counter(screen, round(clock.get_fps()))
+
+        if fps_counter_visible:
+            renderer.render_fps_counter(screen, round(clock.get_fps()))
 
 
     clock.tick(target_fps)
